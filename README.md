@@ -54,7 +54,7 @@ Start-Process $out
 ```
 
 SHA-256 attendu :
-`HASH_APRÈS_BUILD_0.1.1`
+`7372645E06A64A915659D115DB176E002F0EB15529FB3A3D3D691BC389E50FB3`
 
 Le build est **non signé** : SmartScreen peut demander une confirmation. Il ne
 contient pas TWRP, SP Flash Tool, ADB ni les pilotes. Il ne remplace pas M0.
