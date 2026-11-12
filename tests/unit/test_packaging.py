@@ -18,7 +18,7 @@ def test_info(capsys):
     assert main(["info"]) == 0
     payload = json.loads(capsys.readouterr().out)
     assert payload["app"] == "MCC Unlocker"
-    assert payload["version"] == "0.1.0"
+    assert payload["version"] == "0.1.1"
 
 
 def test_help():
@@ -75,7 +75,7 @@ def test_required_docs_and_pyproject():
         assert (ROOT / "docs" / name).is_file(), name
     data = tomllib.loads((ROOT / "pyproject.toml").read_text())
     assert data["project"]["scripts"]["mcc-unlocker"] == "mcc_unlocker.cli:main"
-    assert data["project"]["version"] == "0.1.0"
+    assert data["project"]["version"] == "0.1.1"
 
 
 def test_clean_repo_has_no_legacy_private_assets():
@@ -98,3 +98,20 @@ def test_local_fetched_assets_are_accepted(tmp_path):
     result = load_community_assets(tmp_path)
     assert isinstance(result, Err)
 
+
+
+def test_pyinstaller_entrypoint_runs_without_package_context():
+    import os
+    import subprocess
+
+    env = dict(os.environ)
+    env["PYTHONPATH"] = str(ROOT / "src")
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "src" / "mcc_unlocker" / "__main__.py"), "--help"],
+        capture_output=True,
+        text=True,
+        cwd=ROOT,
+        env=env,
+    )
+    assert result.returncode == 0, result.stderr + result.stdout
+    assert "unlock" in result.stdout

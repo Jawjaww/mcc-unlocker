@@ -2,12 +2,12 @@
 
 import sys
 
-from .cli import main
+from mcc_unlocker.cli import main
 
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:
-        from .ui.launcher_app import main as launcher_main
+        from mcc_unlocker.ui.launcher_app import main as launcher_main
 
         raise SystemExit(launcher_main(sys.argv))
     raise SystemExit(main())

@@ -46,15 +46,15 @@ TWRP**.
 Télécharger l'installateur depuis la release :
 
 ```powershell
-$url = "https://github.com/Jawjaww/mcc-unlocker/releases/download/v0.1.0/MCC-Unlocker-Setup-0.1.0.exe"
-$out = "$env:USERPROFILE\Downloads\MCC-Unlocker-Setup-0.1.0.exe"
+$url = "https://github.com/Jawjaww/mcc-unlocker/releases/download/v0.1.1/MCC-Unlocker-Setup-0.1.1.exe"
+$out = "$env:USERPROFILE\Downloads\MCC-Unlocker-Setup-0.1.1.exe"
 Invoke-WebRequest -Uri $url -OutFile $out
 Get-FileHash $out -Algorithm SHA256
 Start-Process $out
 ```
 
 SHA-256 attendu :
-`B3A7D96A1250E49877F1CCC8CD305CB0DDED06A4A243A8E6DC601300D54D020D`
+`HASH_APRÈS_BUILD_0.1.1`
 
 Le build est **non signé** : SmartScreen peut demander une confirmation. Il ne
 contient pas TWRP, SP Flash Tool, ADB ni les pilotes. Il ne remplace pas M0.

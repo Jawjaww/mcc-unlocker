@@ -3,14 +3,14 @@
 ## Installer la release
 
 ```powershell
-$url = "https://github.com/Jawjaww/mcc-unlocker/releases/download/v0.1.0/MCC-Unlocker-Setup-0.1.0.exe"
-$out = "$env:USERPROFILE\Downloads\MCC-Unlocker-Setup-0.1.0.exe"
+$url = "https://github.com/Jawjaww/mcc-unlocker/releases/download/v0.1.1/MCC-Unlocker-Setup-0.1.1.exe"
+$out = "$env:USERPROFILE\Downloads\MCC-Unlocker-Setup-0.1.1.exe"
 Invoke-WebRequest -Uri $url -OutFile $out
 Get-FileHash $out -Algorithm SHA256
 Start-Process $out
 ```
 
-Hash attendu : `B3A7D96A1250E49877F1CCC8CD305CB0DDED06A4A243A8E6DC601300D54D020D`.
+Hash attendu : `HASH_APRÈS_BUILD_0.1.1`.
 
 L'installateur est non signé et ne contient pas les assets TWRP/scatter. Dans
 l'application, sélectionne le scatter et l'image TWRP depuis le dépôt
