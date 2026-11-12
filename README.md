@@ -49,15 +49,15 @@ n'est pas possible, et il reste ensuite l'environnement de maintenance.
 Télécharger l'installateur depuis la release :
 
 ```powershell
-$url = "https://github.com/Jawjaww/mcc-unlocker/releases/download/v0.2.0/MCC-Unlocker-Setup-0.2.0.exe"
-$out = "$env:USERPROFILE\Downloads\MCC-Unlocker-Setup-0.2.0.exe"
+$url = "https://github.com/Jawjaww/mcc-unlocker/releases/download/v0.2.1/MCC-Unlocker-Setup-0.2.1.exe"
+$out = "$env:USERPROFILE\Downloads\MCC-Unlocker-Setup-0.2.1.exe"
 Invoke-WebRequest -Uri $url -OutFile $out
 Get-FileHash $out -Algorithm SHA256
 Start-Process $out
 ```
 
 SHA-256 attendu :
-`8F5FB0CFE049729002EE40F1B5E039535519E5E898C88D523646E70B64AD5493`
+`HASH_APRÈS_BUILD_0.2.1`
 
 Le build est **non signé** : SmartScreen peut demander une confirmation. Il ne
 contient pas TWRP, SP Flash Tool, ADB ni les pilotes. Il ne remplace pas M0.

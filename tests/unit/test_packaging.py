@@ -18,7 +18,7 @@ def test_info(capsys):
     assert main(["info"]) == 0
     payload = json.loads(capsys.readouterr().out)
     assert payload["app"] == "MCC Unlocker"
-    assert payload["version"] == "0.2.0"
+    assert payload["version"] == "0.2.1"
 
 
 def test_help():
@@ -75,7 +75,7 @@ def test_required_docs_and_pyproject():
         assert (ROOT / "docs" / name).is_file(), name
     data = tomllib.loads((ROOT / "pyproject.toml").read_text())
     assert data["project"]["scripts"]["mcc-unlocker"] == "mcc_unlocker.cli:main"
-    assert data["project"]["version"] == "0.2.0"
+    assert data["project"]["version"] == "0.2.1"
 
 
 def test_clean_repo_has_no_legacy_private_assets():
@@ -115,3 +115,28 @@ def test_pyinstaller_entrypoint_runs_without_package_context():
     )
     assert result.returncode == 0, result.stderr + result.stdout
     assert "unlock" in result.stdout
+
+
+def test_start_page_explains_tools_and_installer_cleans_old_files():
+    import os
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    from mcc_unlocker.ui.unlock_app import UnlockWindow
+
+    # Construction légère sans afficher de fenêtre.
+    try:
+        from PyQt6.QtWidgets import QApplication
+    except Exception:  # noqa: BLE001
+        return
+    app = QApplication.instance() or QApplication([])
+    window = UnlockWindow(adb_resolver=lambda: "adb", out_root="/tmp/mcc-test-ui")
+    try:
+        text = window.pages["START"].tools.text()
+        assert "spflashtool.com" in text
+        assert "platform-tools" in text
+        assert "ne les installe pas" in text
+    finally:
+        window.close()
+    iss = (ROOT / "installer" / "windows" / "mcc-unlocker.iss").read_text()
+    assert "CloseApplications=yes" in iss
+    assert "[InstallDelete]" in iss
+    assert "_internal" in iss

@@ -46,10 +46,23 @@ class StartPage(StepPage):
         )
         warning.setWordWrap(True)
         self.add_widget(warning)
+        self.tools = QLabel(
+            "<b>À installer toi-même avant de commencer :</b><br>"
+            "• <a href='https://spflashtool.com/'>SP Flash Tool</a> et le pilote "
+            "USB MediaTek/VCOM adapté à ton robot.<br>"
+            "• <a href='https://developer.android.com/tools/releases/platform-tools'>"
+            "Android Platform Tools (ADB)</a>.<br>"
+            "L'application ne les installe pas et ne les met pas à jour. "
+            "<a href='https://github.com/Jawjaww/mcc-unlocker/blob/main/docs/tools.md'>"
+            "Aide sur les outils</a>."
+        )
+        self.tools.setOpenExternalLinks(True)
+        self.tools.setWordWrap(True)
+        self.add_widget(self.tools)
         self.owner = QCheckBox("Je possède ce robot et j'accepte le risque.")
         self.port = QCheckBox("J'utiliserai le port droit « Android USB ».")
         self.spflash = QCheckBox(
-            "J'ai installé SP Flash Tool et le pilote MediaTek sur cet ordinateur."
+            "J'ai installé SP Flash Tool, le pilote USB MediaTek/VCOM et ADB."
         )
         for box in (self.owner, self.port, self.spflash):
             box.stateChanged.connect(self.refresh)
@@ -63,9 +76,10 @@ class StartPage(StepPage):
         adb_row.addWidget(verify)
         self.add_layout(adb_row)
         self.set_help(
-            "Si ADB manque : installe Android Platform Tools, ajoute son dossier au PATH, "
-            "puis clique sur Vérifier ADB. SP Flash Tool et le pilote MediaTek sont à "
-            "installer manuellement ; l'application ne les installe pas."
+            "ADB manque ? Utilise le lien Android Platform Tools, ajoute son dossier au "
+            "PATH, puis clique sur Vérifier ADB. Pour SP Flash Tool et le pilote "
+            "MediaTek : télécharge-les depuis le lien ci-dessus et suis le tutoriel de "
+            "ton modèle. L'application ne les installe pas."
         )
         self.set_primary_action(self._primary)
         self.set_primary("Commencer", False)

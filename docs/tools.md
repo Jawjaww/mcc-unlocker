@@ -24,6 +24,21 @@ L'application :
 | TWRP `recovery.img` | asset communautaire épinglé | taille + SHA-256 | **jamais automatique** |
 | Scatter | asset communautaire épinglé | taille + SHA-256 + cohérence du profil | **jamais automatique** |
 
+## Où les trouver ?
+
+- SP Flash Tool : <https://spflashtool.com/> ;
+- Android Platform Tools / ADB :
+  <https://developer.android.com/tools/releases/platform-tools> ;
+- TWRP et scatter communautaires :
+  <https://github.com/EliasKotlyar/Monsieur-Cuisine-Connect-Hack> ;
+- pilote MediaTek/VCOM : fourni avec le tutoriel SP Flash Tool de ton modèle.
+  N'installe pas un pilote trouvé au hasard.
+
+Les versions exactes de SP Flash Tool et du pilote peuvent compter selon la
+variante du robot. L'application ne les met jamais à jour automatiquement.
+ADB récent convient généralement ; TWRP et le scatter doivent correspondre
+exactement au modèle.
+
 ## Faut-il tout linker ?
 
 Non. Un lien direct peut aider, mais il ne doit pas être un bouton

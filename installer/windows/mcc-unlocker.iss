@@ -2,7 +2,7 @@
 ; Construit après PyInstaller sur Windows ; ne pas compiler depuis macOS.
 
 #define MyAppName "MCC Unlocker"
-#define MyAppVersion "0.2.0"
+#define MyAppVersion "0.2.1"
 #define MyAppPublisher "MCC-Unlocker contributors"
 #define MyAppExeName "MCC-Unlocker.exe"
 
@@ -15,6 +15,9 @@ DefaultDirName={localappdata}\MCC Unlocker
 DefaultGroupName={#MyAppName}
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
+CloseApplications=yes
+RestartApplications=no
+UsePreviousAppDir=yes
 OutputDir=..\..\dist
 OutputBaseFilename=MCC-Unlocker-Setup-{#MyAppVersion}
 Compression=lzma2
@@ -26,6 +29,13 @@ UninstallDisplayIcon={app}\{#MyAppExeName}
 
 [Languages]
 Name: "french"; MessagesFile: "compiler:Languages\French.isl"
+
+[InstallDelete]
+; Nettoyage d'une version précédente avant de copier la nouvelle.
+Type: files; Name: "{app}\MCC-Unlocker.exe"
+Type: filesandordirs; Name: "{app}\_internal"
+Type: filesandordirs; Name: "{app}\docs"
+Type: filesandordirs; Name: "{app}\assets"
 
 [Files]
 Source: "..\..\dist\MCC-Unlocker\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
