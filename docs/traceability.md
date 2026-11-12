@@ -13,8 +13,9 @@ Légende : **I** implémenté, **S** testé en simulation, **M** validé matéri
 | 6 | Sauvegarde fichiers système | `unlock/twrp.py`, session | ✅ | ✅ | — | B (M0) |
 | 7 | Flashs finaux TWRP GUI | UI/session + confirmations | ✅ | ✅ (UI) | — | B (M0) |
 | 8 | Vérification MCC/ADB/persistance | `unlock/workflow.py`, UI | ✅ | ✅ | — | B (robot) |
-| 9 | Rollback boot | documentation + guide | ✅ | — | — | B (M0) |
-| 10 | Packaging Windows | `scripts/build.py`, Inno, CI | ✅ | ✅ (build dry-run) | — | B (Windows) |
+| 9 | Parcours UX 7 écrans | `ui/unlock_app.py`, `ui/wizard/`, `docs/ux.md` | ✅ | ✅ (offscreen) | — | B (M0) |
+| 10 | Rollback boot | documentation + guide | ✅ | — | — | B (M0) |
+| 11 | Packaging Windows | `scripts/build.py`, Inno, CI | ✅ | ✅ (build dry-run) | — | B (Windows) |
 
-Dernière exécution locale : **44 tests passés** dans ce dépôt propre (unlock +
+Dernière exécution locale : **48 tests passés** dans ce dépôt propre (unlock +
 UI offscreen), plus les tests du dépôt historique. Aucun test matériel.

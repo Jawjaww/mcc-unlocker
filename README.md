@@ -9,18 +9,21 @@ TWRP**.
 > M0. Le produit n'est pas terminé et ne doit pas être présenté comme un
 > « one-click » fiable.
 
-## Ce que fait l'application
+## Le parcours en 7 écrans
 
-1. Vérifie le scatter, le backup `boot` et l'image TWRP (taille + SHA-256).
-2. Affiche les adresses/tailles exactes de readback SP Flash Tool.
-3. Attend TWRP en ADB USB.
-4. Monte `/system` en écriture, avec test d'écriture réel.
-5. Sauvegarde `build.prop` et `recovery-from-boot.p`.
-6. Patche `build.prop` de façon idempotente et vérifie les propriétés.
-7. Pousse `bootimg.bin` (boot original) et `recovery.bin` (TWRP) dans `/sdcard/`.
-8. Guide les deux flashs TWRP GUI : boot original dans `boot`, TWRP dans `recovery`.
-9. Vérifie le démarrage MCC, ADB et la persistance après deux redémarrages.
-10. Écrit un rapport et un journal durables.
+1. **Commencer** — comprendre le but et vérifier ADB.
+2. **Brancher le robot** — trappe Torx, port droit « Android USB ».
+3. **Sauvegarder le démarrage** — copie obligatoire avant toute modification.
+4. **Démarrer TWRP** — TWRP est indispensable : c'est lui qui permet de modifier
+   les réglages Android et de garder le robot réparable.
+5. **Autoriser ADB** — sauvegarde des réglages, confirmation explicite, puis
+   modification vérifiée.
+6. **Remettre le démarrage et garder TWRP** — boot original dans `boot`, TWRP
+   dans `recovery`, deux Install Image dans TWRP GUI.
+7. **Redémarrer et vérifier** — MCC, ADB et TWRP accessibles.
+
+TWRP n'est pas un « outil de secours » optionnel : sans lui, le patch système
+n'est pas possible, et il reste ensuite l'environnement de maintenance.
 
 ## Ce qu'elle ne fait pas
 
@@ -46,15 +49,15 @@ TWRP**.
 Télécharger l'installateur depuis la release :
 
 ```powershell
-$url = "https://github.com/Jawjaww/mcc-unlocker/releases/download/v0.1.2/MCC-Unlocker-Setup-0.1.2.exe"
-$out = "$env:USERPROFILE\Downloads\MCC-Unlocker-Setup-0.1.2.exe"
+$url = "https://github.com/Jawjaww/mcc-unlocker/releases/download/v0.2.0/MCC-Unlocker-Setup-0.2.0.exe"
+$out = "$env:USERPROFILE\Downloads\MCC-Unlocker-Setup-0.2.0.exe"
 Invoke-WebRequest -Uri $url -OutFile $out
 Get-FileHash $out -Algorithm SHA256
 Start-Process $out
 ```
 
 SHA-256 attendu :
-`EBCB4453B4C907502E18C1F8682E6B9D7111A4DB04C2725525B8C89AA7DA5EFB`
+`HASH_APRÈS_BUILD_0.2.0`
 
 Le build est **non signé** : SmartScreen peut demander une confirmation. Il ne
 contient pas TWRP, SP Flash Tool, ADB ni les pilotes. Il ne remplace pas M0.
@@ -130,6 +133,7 @@ Le dernier résultat local est indiqué dans [`docs/traceability.md`](docs/trace
 
 ## Documentation
 
+- [Parcours utilisateur — 7 écrans](docs/ux.md)
 - [Procédure et limites](docs/unlock-v1.md)
 - [Windows, packaging et lancement](docs/windows.md)
 - [Sécurité](docs/security.md)

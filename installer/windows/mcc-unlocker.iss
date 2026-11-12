@@ -2,7 +2,7 @@
 ; Construit après PyInstaller sur Windows ; ne pas compiler depuis macOS.
 
 #define MyAppName "MCC Unlocker"
-#define MyAppVersion "0.1.2"
+#define MyAppVersion "0.2.0"
 #define MyAppPublisher "MCC-Unlocker contributors"
 #define MyAppExeName "MCC-Unlocker.exe"
 

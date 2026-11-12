@@ -45,13 +45,13 @@ jobs:
       - name: Hash
         shell: pwsh
         run: |
-          Get-FileHash "dist\MCC-Unlocker-Setup-0.1.2.exe" -Algorithm SHA256 |
+          Get-FileHash "dist\MCC-Unlocker-Setup-0.2.0.exe" -Algorithm SHA256 |
             Format-List | Out-File -Encoding utf8 "dist\MCC-Unlocker-Setup.sha256"
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: MCC-Unlocker-Windows
           path: |
-            dist/MCC-Unlocker-Setup-0.1.2.exe
+            dist/MCC-Unlocker-Setup-0.2.0.exe
             dist/MCC-Unlocker-Setup.sha256
           if-no-files-found: error

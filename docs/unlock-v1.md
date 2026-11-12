@@ -10,6 +10,8 @@ La v1 suit la procédure communautaire documentée :
 
 - SP Flash Tool effectue les readbacks et les flashs BROM.
 - TWRP/ADB effectue le patch de `/system/build.prop`.
+- TWRP n'est pas un secours : il est indispensable au patch et reste installé
+  en `recovery` pour la maintenance.
 - TWRP GUI effectue les deux flashs finaux.
 - L'application guide, valide les fichiers et vérifie les résultats.
 - Aucun moteur TWRP n'est réécrit ; on utilise l'image communautaire.
