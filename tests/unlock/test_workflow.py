@@ -50,7 +50,7 @@ def test_workflow_happy_path_and_report(tmp_path):
     report = workflow.save_report()
     assert report.is_ok
     assert (tmp_path / "unlock_report.json").is_file()
-    text = (tmp_path / "unlock_report.md").read_text()
+    text = (tmp_path / "unlock_report.md").read_text(encoding="utf-8")
     assert "COMPLETED" in text
     assert "preuve bit-à-bit" in text.lower()
 

@@ -8,6 +8,7 @@ on:
       - "scripts/build.py"
       - "installer/windows/**"
       - "src/mcc_unlocker/**"
+      - "tests/**"
 
 jobs:
   build:
