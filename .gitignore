@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.venv/
+.venv-win/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.spec
+unlock-reports/
+vendor/
+*.img
+*.bin
+.DS_Store

@@ -1,0 +1,49 @@
+name: windows-package
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/windows.yml"
+      - "scripts/build.py"
+      - "installer/windows/**"
+      - "src/mcc_unlocker/**"
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,gui]"
+          pip install pyinstaller
+      - name: Tests
+        run: pytest -q
+      - name: Build onedir
+        run: python scripts/build.py
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress
+      - name: Build installer
+        shell: pwsh
+        run: |
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          if (!(Test-Path $iscc)) { throw "ISCC.exe introuvable" }
+          & $iscc "installer\windows\mcc-unlocker.iss"
+      - name: Hash
+        shell: pwsh
+        run: |
+          Get-FileHash "dist\MCC-Unlocker-Setup-0.1.0.exe" -Algorithm SHA256 |
+            Format-List | Out-File -Encoding utf8 "dist\MCC-Unlocker-Setup.sha256"
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: MCC-Unlocker-Windows
+          path: |
+            dist/MCC-Unlocker-Setup-0.1.0.exe
+            dist/MCC-Unlocker-Setup.sha256
+          if-no-files-found: error

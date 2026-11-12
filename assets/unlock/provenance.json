@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "source_repo": "https://github.com/EliasKotlyar/Monsieur-Cuisine-Connect-Hack",
+  "commit": "1407c35ac55c6d5e706d4e9150e541c3acb8c003",
+  "files": {
+    "twrp_recovery.img": {
+      "url": "https://raw.githubusercontent.com/EliasKotlyar/Monsieur-Cuisine-Connect-Hack/1407c35ac55c6d5e706d4e9150e541c3acb8c003/hacks/recovery.img",
+      "sha256": "fc9ac999fc3b0a6c0cb563f39359084a6fcc211aeb42e7b754990afa4b543d3e",
+      "size_bytes": 11452416,
+      "kind": "android_bootimg",
+      "license": "unknown_not_declared_in_source_repo",
+      "redistributable": false
+    },
+    "l706_dfbh_v_695scatter.txt": {
+      "url": "https://raw.githubusercontent.com/EliasKotlyar/Monsieur-Cuisine-Connect-Hack/1407c35ac55c6d5e706d4e9150e541c3acb8c003/informations/l706_dfbh_v_695scatter.txt",
+      "sha256": "13b8260dba9e4efba874c09e35803af43cc69556ba0f1937226240b0ab318364",
+      "size_bytes": 8703,
+      "license": "unknown_not_declared_in_source_repo",
+      "redistributable": false
+    }
+  },
+  "verification": "Downloaded from the pinned community commit and hashed locally. This project does not redistribute these files and has not validated them on the reference robot."
+}

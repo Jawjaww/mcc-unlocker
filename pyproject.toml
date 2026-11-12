@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcc-unlocker"
+version = "0.1.0"
+description = "Guided SP Flash Tool + TWRP unlock helper for Monsieur Cuisine Connect on Windows"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "MCC Unlocker contributors" }]
+keywords = ["mediatek", "adb", "twrp", "mcc", "unlock"]
+dependencies = []
+
+[project.optional-dependencies]
+gui = ["PyQt6>=6.6"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23"]
+
+[project.scripts]
+mcc-unlocker = "mcc_unlocker.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcc_unlocker"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+addopts = "-ra --strict-markers"
+markers = ["hardware: requires a real device"]
