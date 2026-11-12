@@ -10,7 +10,7 @@ Get-FileHash $out -Algorithm SHA256
 Start-Process $out
 ```
 
-Hash attendu : `HASH_APRÈS_BUILD_0.2.0`.
+Hash attendu : `8F5FB0CFE049729002EE40F1B5E039535519E5E898C88D523646E70B64AD5493`.
 
 L'installateur est non signé et ne contient pas les assets TWRP/scatter. Dans
 l'application, sélectionne le scatter et l'image TWRP depuis le dépôt
