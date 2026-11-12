@@ -1,5 +1,22 @@
 # Windows — lancement et packaging
 
+## Installer la release
+
+```powershell
+$url = "https://github.com/Jawjaww/mcc-unlocker/releases/download/v0.1.0/MCC-Unlocker-Setup-0.1.0.exe"
+$out = "$env:USERPROFILE\Downloads\MCC-Unlocker-Setup-0.1.0.exe"
+Invoke-WebRequest -Uri $url -OutFile $out
+Get-FileHash $out -Algorithm SHA256
+Start-Process $out
+```
+
+Hash attendu : `B3A7D96A1250E49877F1CCC8CD305CB0DDED06A4A243A8E6DC601300D54D020D`.
+
+L'installateur est non signé et ne contient pas les assets TWRP/scatter. Dans
+l'application, sélectionne le scatter et l'image TWRP depuis le dépôt
+communautaire cloné localement, ou utilise la version source et
+`scripts/fetch_unlock_assets.py`.
+
 ## Lancer depuis les sources
 
 Prérequis : Windows 10/11, Python 3.11+, Android platform-tools, SP Flash Tool
