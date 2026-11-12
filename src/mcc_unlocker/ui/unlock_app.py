@@ -103,6 +103,7 @@ if QT_AVAILABLE:  # pragma: no cover - Qt rendering
             device_provider: Callable[[str], list[tuple[str, str]]] | None = None,
             adb_resolver: Callable[[], str] | None = None,
             out_root: Path | str | None = None,
+            confirm_patch: Callable[[], bool] | None = None,
         ) -> None:
             super().__init__()
             self.setWindowTitle("MCC Unlocker — déblocage guidé")
@@ -116,6 +117,7 @@ if QT_AVAILABLE:  # pragma: no cover - Qt rendering
             self._workers: list[QThread] = []
             self._busy = False
             self._adb_path = ""
+            self._confirm_patch = confirm_patch or self._ask_patch_confirmation
             self._build_ui()
             self._prefill_community_assets()
 
@@ -163,8 +165,13 @@ if QT_AVAILABLE:  # pragma: no cover - Qt rendering
 
             self.owner_check = QCheckBox("Je possède ce robot et j'accepte le risque.")
             self.port_check = QCheckBox("J'utilise le port droit « Android USB ».")
+            self.prereq_check = QCheckBox(
+                "J'ai installé SP Flash Tool et son pilote, et TWRP est déjà flashé "
+                "dans boot (le robot démarre sur TWRP)."
+            )
             layout.addWidget(self.owner_check)
             layout.addWidget(self.port_check)
+            layout.addWidget(self.prereq_check)
 
             files = QGroupBox("Fichiers validés avant de commencer")
             form = QFormLayout(files)
@@ -198,11 +205,12 @@ if QT_AVAILABLE:  # pragma: no cover - Qt rendering
             layout.addWidget(guide_view)
 
             row = QHBoxLayout()
-            self.start_button = QPushButton("Valider les fichiers et patcher /system")
+            self.start_button = QPushButton("Valider les fichiers et vérifier TWRP")
             self.start_button.clicked.connect(self._start)
             self.start_button.setEnabled(False)
             self.owner_check.stateChanged.connect(self._refresh_start)
             self.port_check.stateChanged.connect(self._refresh_start)
+            self.prereq_check.stateChanged.connect(self._refresh_start)
             guide = QPushButton("Ouvrir le guide complet")
             guide.clicked.connect(self._open_guide)
             row.addWidget(self.start_button, 1)
@@ -232,6 +240,13 @@ if QT_AVAILABLE:  # pragma: no cover - Qt rendering
             self.session_log = QPlainTextEdit()
             self.session_log.setReadOnly(True)
             layout.addWidget(self.session_log, 1)
+
+            self.patch_button = QPushButton(
+                "Sauvegarder et patcher /system (confirmation explicite requise)"
+            )
+            self.patch_button.clicked.connect(self._patch_system)
+            self.patch_button.setEnabled(False)
+            layout.addWidget(self.patch_button)
 
             row = QHBoxLayout()
             self.push_button = QPushButton("Pousser bootimg.bin et recovery.bin")
@@ -321,6 +336,7 @@ if QT_AVAILABLE:  # pragma: no cover - Qt rendering
             ready = bool(
                 self.owner_check.isChecked()
                 and self.port_check.isChecked()
+                and self.prereq_check.isChecked()
                 and self.scatter_edit.text().strip()
                 and self.boot_edit.text().strip()
                 and self.twrp_edit.text().strip()
@@ -361,8 +377,14 @@ if QT_AVAILABLE:  # pragma: no cover - Qt rendering
         def _start(self) -> None:
             if self._busy:
                 return
-            if not (self.owner_check.isChecked() and self.port_check.isChecked()):
-                self._show_error("Confirme la propriété du robot et l'usage du port droit.")
+            if not (
+                self.owner_check.isChecked()
+                and self.port_check.isChecked()
+                and self.prereq_check.isChecked()
+            ):
+                self._show_error(
+                    "Confirme la propriété, le port droit, SP Flash Tool et le flash préalable de TWRP."
+                )
                 return
             serial = self.device_combo.currentData()
             if not serial:
@@ -396,16 +418,52 @@ if QT_AVAILABLE:  # pragma: no cover - Qt rendering
                     self._show_error(result)
                     return
             self.stack.setCurrentIndex(1)
-            self.session_status.setText("Attente de TWRP, puis sauvegarde et patch de /system…")
-            self._append_log("Session créée.")
-            self._run_async(self._wait_and_patch, self._after_patch)
+            self.session_status.setText(
+                "Attente de TWRP. Aucune modification de /system n'a encore été effectuée."
+            )
+            self._append_log("Session créée. Recherche de TWRP ; aucune écriture.")
+            self._run_async(self._wait_for_twrp, self._after_twrp_ready)
 
-        async def _wait_and_patch(self):
+        async def _wait_for_twrp(self):
             assert self.session is not None
-            ready = await self.session.wait_for_twrp(120)
-            if isinstance(ready, Err):
-                return ready
-            return await self.session.patch_system()
+            return await self.session.wait_for_twrp(120)
+
+        def _after_twrp_ready(self, result: object) -> None:
+            if isinstance(result, Err):
+                self.session_status.setText("TWRP n'est pas accessible.")
+                self._append_log(f"Erreur : {result.code.value} — {result.message}")
+                self._show_error(result)
+                return
+            self.session_status.setText(
+                "TWRP est prêt. Aucune modification n'a été faite. "
+                "Le bouton de patch demande une confirmation explicite."
+            )
+            self._append_log(f"TWRP prêt : {result.value}. Aucune écriture effectuée.")
+            self.patch_button.setEnabled(True)
+
+        def _ask_patch_confirmation(self) -> bool:
+            answer = QMessageBox.question(
+                self,
+                "Confirmer le patch système",
+                "Cette étape va sauvegarder puis modifier /system/build.prop et "
+                "supprimer recovery-from-boot.p.\n\n"
+                "Le robot est sous TWRP, le backup boot est vérifié et tu acceptes "
+                "cette modification. Continuer ?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No,
+            )
+            return answer is QMessageBox.StandardButton.Yes
+
+        def _patch_system(self) -> None:
+            if self.session is None:
+                return
+            if not self._confirm_patch():
+                self._append_log("Patch annulé : confirmation refusée.")
+                self.session_status.setText("Patch non confirmé. Aucune écriture effectuée.")
+                return
+            self.patch_button.setEnabled(False)
+            self._append_log("Confirmation reçue : sauvegarde et patch de /system.")
+            self._run_async(self.session.patch_system, self._after_patch)
 
         def _after_patch(self, result: object) -> None:
             if isinstance(result, Err):
@@ -579,6 +637,7 @@ if QT_AVAILABLE:  # pragma: no cover - Qt rendering
             self.stack.setCurrentIndex(0)
             self.session_log.clear()
             self.report_view.clear()
+            self.patch_button.setEnabled(False)
             self.push_button.setEnabled(False)
             self.confirm_flash_button.setEnabled(False)
             self.reboot_button.setEnabled(False)

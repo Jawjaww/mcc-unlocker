@@ -16,5 +16,5 @@ Légende : **I** implémenté, **S** testé en simulation, **M** validé matéri
 | 9 | Rollback boot | documentation + guide | ✅ | — | — | B (M0) |
 | 10 | Packaging Windows | `scripts/build.py`, Inno, CI | ✅ | ✅ (build dry-run) | — | B (Windows) |
 
-Dernière exécution locale : **43 tests passés** dans ce dépôt propre (unlock +
+Dernière exécution locale : **44 tests passés** dans ce dépôt propre (unlock +
 UI offscreen), plus les tests du dépôt historique. Aucun test matériel.

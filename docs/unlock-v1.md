@@ -32,7 +32,12 @@ La v1 suit la procédure communautaire documentée :
    ```
    Redémarrer : TWRP doit apparaître.
 
-3. **Patch système** — l'application, via ADB/TWRP :
+3. **Vérification TWRP/ADB** — l'application attend TWRP et vérifie ADB.
+   **Aucune modification n'est effectuée à ce stade.**
+4. **Confirmation explicite** — l'utilisateur clique sur
+   « Sauvegarder et patcher /system » et confirme la boîte de dialogue.
+   Sans confirmation, l'état reste `TWRP_READY` et `/system` n'est pas touché.
+5. **Patch système** — l'application, via ADB/TWRP :
    ```sh
    mount /system
    remountrw
@@ -43,7 +48,7 @@ La v1 suit la procédure communautaire documentée :
    `recovery-from-boot.p`, écrit les propriétés, vérifie, puis supprime
    `recovery-from-boot.p`.
 
-4. **Fichiers finaux** — pousser sous les noms de la référence :
+6. **Fichiers finaux** — pousser sous les noms de la référence :
    ```sh
    adb push bootimg.bin /sdcard/
    adb push recovery.bin /sdcard/
@@ -52,7 +57,7 @@ La v1 suit la procédure communautaire documentée :
    - `bootimg.bin` → `boot` ;
    - `recovery.bin` → `recovery`.
 
-5. **Redémarrage et vérification** : MCC démarre, ADB répond, puis deux
+7. **Redémarrage et vérification** : MCC démarre, ADB répond, puis deux
    redémarrages à froid confirment la persistance.
 
 ## Propriétés

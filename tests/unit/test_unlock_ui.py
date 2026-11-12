@@ -49,10 +49,12 @@ def test_unlock_window_guides_patch_and_final_confirmations(qapp, tmp_path):
         device_provider=lambda _adb: [("SERIAL-1234567890", "device")],
         adb_resolver=lambda: "adb",
         out_root=tmp_path / "reports",
+        confirm_patch=lambda: True,
     )
     try:
         window.owner_check.setChecked(True)
         window.port_check.setChecked(True)
+        window.prereq_check.setChecked(True)
         window.scatter_edit.setText(str(scatter))
         window.boot_edit.setText(str(boot))
         window.twrp_edit.setText(str(image))
@@ -65,11 +67,23 @@ def test_unlock_window_guides_patch_and_final_confirmations(qapp, tmp_path):
         assert window.device_combo.count() == 1
         window._start()
         for _ in range(400):
+            if window.patch_button.isEnabled():
+                break
+            QTest.qWait(10)
+        assert window.patch_button.isEnabled()
+        assert window.session is not None
+        assert window.session.phase.value == "TWRP_READY"
+        window._confirm_patch = lambda: False
+        window._patch_system()
+        assert window.session.phase.value == "TWRP_READY"
+        assert not window.push_button.isEnabled()
+        window._confirm_patch = lambda: True
+        window._patch_system()
+        for _ in range(400):
             if window.push_button.isEnabled():
                 break
             QTest.qWait(10)
         assert window.push_button.isEnabled()
-        assert window.session is not None
         assert window.session.phase.value == "SYSTEM_PATCHED"
         window._push_final()
         for _ in range(200):
