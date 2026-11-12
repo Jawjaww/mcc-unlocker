@@ -9,6 +9,7 @@ import tomllib
 from pathlib import Path
 
 from mcc_unlocker.cli import main
+from mcc_unlocker.core.result import Err
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -82,3 +83,18 @@ def test_clean_repo_has_no_legacy_private_assets():
     assert not (ROOT / "assets" / "payloads").exists()
     assert not (ROOT / "src" / "mcc_unlocker" / "recipeservice").exists()
     assert not (ROOT / "src" / "mcc_unlocker" / "services").exists()
+
+
+def test_local_fetched_assets_are_accepted(tmp_path):
+    from mcc_unlocker.unlock.community import load_community_assets
+
+    provenance = json.loads((ROOT / "assets" / "unlock" / "provenance.json").read_text())
+    twrp = provenance["files"]["twrp_recovery.img"]
+    scatter = provenance["files"]["l706_dfbh_v_695scatter.txt"]
+    # Use zero-filled files of the right size only for the parser path; hash
+    # validation must still reject them.
+    (tmp_path / "twrp_recovery.img").write_bytes(b"\0" * twrp["size_bytes"])
+    (tmp_path / "l706_dfbh_v_695scatter.txt").write_bytes(b"\0" * scatter["size_bytes"])
+    result = load_community_assets(tmp_path)
+    assert isinstance(result, Err)
+

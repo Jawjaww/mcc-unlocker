@@ -18,6 +18,7 @@ from ..core.result import Err, Ok, Result
 from ..utils.paths import project_root
 
 REPO_DIR_NAME = "Monsieur-Cuisine-Connect-Hack"
+LOCAL_ASSETS_DIR = Path.home() / ".mcc-unlocker" / "assets"
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,14 +65,20 @@ def _provenance() -> dict:
 
 
 def load_community_assets(root: Path | str | None = None) -> Result[CommunityAssets]:
-    repository = Path(root).expanduser() if root else find_community_root()
-    if repository is None:
-        return Err(
-            ErrorCode.ERR_UNLOCK_ARTIFACT_INVALID,
-            details={"reason": "community repository not found"},
-        )
+    if root is not None:
+        repository = Path(root).expanduser()
+    else:
+        repository = find_community_root() or LOCAL_ASSETS_DIR
     recovery = repository / "hacks" / "recovery.img"
     scatter = repository / "informations" / "l706_dfbh_v_695scatter.txt"
+    if not recovery.is_file() and (repository / "twrp_recovery.img").is_file():
+        recovery = repository / "twrp_recovery.img"
+        scatter = repository / "l706_dfbh_v_695scatter.txt"
+    if not repository.exists():
+        return Err(
+            ErrorCode.ERR_UNLOCK_ARTIFACT_INVALID,
+            details={"reason": "community repository or local assets not found"},
+        )
     if not recovery.is_file() or not scatter.is_file():
         return Err(
             ErrorCode.ERR_UNLOCK_ARTIFACT_INVALID,
